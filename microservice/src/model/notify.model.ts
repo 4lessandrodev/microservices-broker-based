@@ -15,3 +15,5 @@ export class Notification {
     return notification;
   }
 }
+
+export default Notification;

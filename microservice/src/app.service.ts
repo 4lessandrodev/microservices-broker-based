@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { CreateNotifyDto } from './create-notify.dto';
-import { Notification } from './notify.model';
+import { CreateNotifyDto } from './dto/create-notify.dto';
+import { Notification } from './model/notify.model';
 
 @Injectable()
 export class AppService {

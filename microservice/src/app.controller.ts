@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { Ctx, Payload, RmqContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { CreateNotifyDto as Dto } from './create-notify.dto';
+import { CreateNotifyDto as Dto } from './dto/create-notify.dto';
 
 @Controller()
 export class AppController {
