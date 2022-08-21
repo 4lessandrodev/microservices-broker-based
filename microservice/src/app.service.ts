@@ -15,9 +15,18 @@ export class AppService {
     try {
       console.log('notificação recebida!');
       const notification = Notification.create(dto.message);
+
+      const alreadyExists = this.notifications
+        .map((val) => val.message.toLowerCase() === dto.message.toLowerCase())
+        .includes(true);
+
+      if (alreadyExists) return true;
+
       this.notifications.push(notification);
+      return true;
     } catch (error: any) {
-      throw new RpcException(error.message);
+      // tratar excessões, erros que devem apagar a mensagem da fila
+      return false;
     }
   }
 

@@ -9,6 +9,8 @@ async function bootstrap() {
       // amqp://user:pass@host:10000/virtual-host
       urls: ['amqp://username:password@localhost:5672'],
       queue: 'notifications',
+      // não apaga a mensagem da fila automaticamente
+      noAck: false,
     },
   });
   await app.listen();

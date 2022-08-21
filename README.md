@@ -33,11 +33,35 @@ $ make install
 
 ```
 
+Em seguida faça o build
+
+```sh
+
+$ make build
+
+```
+
 Execute o projeto
 
 ```sh
 
-$ make run
+$ make start
+
+```
+
+Caso deseje ver os logs execute o comando
+
+```sh
+
+$ make logs
+
+```
+
+Para parar a aplicação basta executar
+
+```sh
+
+$ make stop
 
 ```
 
