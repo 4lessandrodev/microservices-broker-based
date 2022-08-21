@@ -6,3 +6,5 @@ export class CreateNotifyDto {
   @Length(3, 140)
   message!: string;
 }
+
+export default CreateNotifyDto;

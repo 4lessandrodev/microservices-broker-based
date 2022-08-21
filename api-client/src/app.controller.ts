@@ -2,7 +2,7 @@ import { Body, Get, Post, UsePipes } from '@nestjs/common';
 import { Controller, ValidationPipe } from '@nestjs/common';
 import { ClientProxy, Transport } from '@nestjs/microservices';
 import { ClientProxyFactory } from '@nestjs/microservices';
-import { CreateNotifyDto } from './create-notify.dto';
+import { CreateNotifyDto } from './dto/create-notify.dto';
 
 @Controller('notifications')
 export class AppController {
