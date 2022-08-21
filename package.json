@@ -1,0 +1,16 @@
+{
+	"name": "app",
+	"author": "Alessandro Dev",
+	"description": "A simple microservice example",
+	"displayName": "microservice",
+	"private": "false",
+	"keywords": [
+		"microservice",
+		"nest",
+		"broker gateway",
+		"rabbit"
+	],
+	"dependencies": {
+		"pm2": "^5.2.0"
+	}
+}
