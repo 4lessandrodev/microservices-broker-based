@@ -13,6 +13,9 @@ start:
 	yarn
 	yarn pm2 start ./ecosystem.config.js
 
+monit:
+	yarn pm2 monit
+
 stop:
 	yarn pm2 stop all
 
