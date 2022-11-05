@@ -15,7 +15,8 @@ export class AppController {
   @Post()
   @UsePipes(ValidationPipe)
   notify(@Body() dto: CreateNotifyDto) {
-    this.broker.emit('create-notification', dto);
+    this.broker.emit('create-notification-mc-a', dto);
+    this.broker.emit('create-notification-mc-b', dto);
     return { success: true };
   }
 

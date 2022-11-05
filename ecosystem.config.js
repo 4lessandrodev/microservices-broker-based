@@ -4,8 +4,12 @@ module.exports = {
     watch: './api-client',
     name: "api-client"
   },{
-    script: './microservice/dist/main.js',
+    script: './microservice-a/dist/main.js',
     watch: './microservice',
-    name: 'microservice'
+    name: 'microservice-a'
+  },{
+    script: './microservice-b/dist/main.js',
+    watch: './microservice',
+    name: 'microservice-b'
   }]
 };

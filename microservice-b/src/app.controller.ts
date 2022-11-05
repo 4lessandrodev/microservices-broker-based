@@ -8,7 +8,7 @@ import { CreateNotifyDto as Dto } from './dto/create-notify.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('create-notification')
+  @EventPattern('create-notification-mc-b')
   async createNotification(@Payload() dto: Dto, @Ctx() ctx: RmqContext) {
     const channel = ctx.getChannelRef();
     const msg = ctx.getMessage();

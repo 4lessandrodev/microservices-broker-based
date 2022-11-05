@@ -13,7 +13,7 @@ export class AppService {
 
   createNotification(dto: CreateNotifyDto) {
     try {
-      console.log('notificação recebida!');
+      console.log('notificação recebida em mc-b!');
       const notification = Notification.create(dto.message);
 
       const alreadyExists = this.notifications
