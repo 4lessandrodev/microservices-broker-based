@@ -8,9 +8,12 @@ async function bootstrap() {
     options: {
       // amqp://user:pass@host:10000/virtual-host
       urls: ['amqp://username:password@localhost:5672'],
-      queue: 'notifications',
+      queue: 'invoices',
       // não apaga a mensagem da fila automaticamente
       noAck: false,
+      queueOptions: {
+        durable: true
+      }
     },
   });
   await app.listen();

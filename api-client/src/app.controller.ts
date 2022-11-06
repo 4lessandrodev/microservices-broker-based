@@ -1,27 +1,35 @@
 import { Body, Get, Post, UsePipes } from '@nestjs/common';
 import { Controller, ValidationPipe } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { CreateNotifyDto } from './dto/create-notify.dto';
+import { Observable } from 'rxjs';
+import { CreateDataDto } from './dto/create-data.dto';
 import RabbitMqFactory from './rabbitmq/connection.factory';
 
-@Controller('notifications')
+@Controller('gateway')
 export class AppController {
-  private readonly broker: ClientProxy;
+  private readonly brokerPayment: ClientProxy;
+  private readonly brokerInvoices: ClientProxy;
 
   constructor(rabbitMQ: RabbitMqFactory) {
-    this.broker = rabbitMQ.connect();
+    this.brokerPayment = rabbitMQ.paymentQueue()
+    this.brokerInvoices = rabbitMQ.invoicesQueue();
   }
 
-  @Post()
+  @Post('/buy')
   @UsePipes(ValidationPipe)
-  notify(@Body() dto: CreateNotifyDto) {
-    this.broker.emit('create-notification-mc-a', dto);
-    this.broker.emit('create-notification-mc-b', dto);
+  async buy(@Body() dto: CreateDataDto) {    
+    this.brokerPayment.emit('@payment', dto);
+    this.brokerInvoices.emit('@invoice', dto);
     return { success: true };
   }
 
-  @Get()
-  getNotifications() {
-    return this.broker.send('get-notifications', {});
+  @Get('/payments')
+  getPayments(): Observable<Array<CreateDataDto>> {
+    return this.brokerPayment.send('@get-payments', {});
+  }
+
+  @Get('/invoices')
+  getInvoices(): Observable<Array<CreateDataDto>> {
+    return this.brokerInvoices.send('@get-invoices', {});
   }
 }

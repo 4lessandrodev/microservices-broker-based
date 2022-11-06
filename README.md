@@ -75,22 +75,26 @@ $ make stop
 
 ```sh
 
-$ curl -X POST http://localhost:3000/notifications \
+$ curl -X POST http://localhost:3000/gateway/buy \
 -H "Content-Type: application/json" \
--d '{ "message": "hello world" }' | jq '.'
+-d '{ "product": "my product", "price": 180 }' | jq '.'
 
 ```
-
-![](docs/create-message.png)
 
 ---
 
-`GET` listar todas as mensagens
+`GET` listar todos os pagamentos
 
 ```sh
 
-$ curl http://localhost:3000/notifications | jq '.'
+$ curl http://localhost:3000/gateway/payments | jq '.'
 
 ```
 
-![](docs/get-messages.png)
+`GET` listar todos as notas
+
+```sh
+
+$ curl http://localhost:3000/gateway/invoices | jq '.'
+
+```

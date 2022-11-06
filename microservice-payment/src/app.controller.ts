@@ -2,29 +2,30 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { Ctx, Payload, RmqContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { CreateNotifyDto as Dto } from './dto/create-notify.dto';
+import { CreatePaymentDto as Dto } from './dto/create-payment.dto';
+import Payment from './model/payment.model';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('create-notification-mc-a')
-  async createNotification(@Payload() dto: Dto, @Ctx() ctx: RmqContext) {
+  @EventPattern('@payment')
+  async createPayment(@Payload() dto: Dto, @Ctx() ctx: RmqContext): Promise<void> {
     const channel = ctx.getChannelRef();
     const msg = ctx.getMessage();
 
-    const isSuccess = this.appService.createNotification(dto);
+    const isSuccess = this.appService.createPayment(dto);
 
     // informar ao rabbitmq que a msg foi processada e pode ser apagada
     if (isSuccess) return await channel.ack(msg);
 
     // informar que a mensagem precisa ser processada novamente.
-    return await channel.nack(msg);
+    if(!isSuccess) return await channel.nack(msg);
   }
 
-  @MessagePattern('get-notifications')
-  getNotifications(@Ctx() ctx: RmqContext) {
-    const data = this.appService.getNotifications();
+  @MessagePattern('@get-payments')
+  getPayments(@Ctx() ctx: RmqContext): Array<Payment> {
+    const data = this.appService.getPayments();
 
     const channel = ctx.getChannelRef();
     const msg = ctx.getMessage();

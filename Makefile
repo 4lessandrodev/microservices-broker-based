@@ -1,12 +1,12 @@
 install:
 	cd ./api-client && yarn && cd ..
-	cd ./microservice-a && yarn && cd ..
-	cd ./microservice-b && yarn && cd ..
+	cd ./microservice-payment && yarn && cd ..
+	cd ./microservice-invoice && yarn && cd ..
 
 build:
 	cd ./api-client && yarn build && cd ..
-	cd ./microservice-a && yarn build && cd ..
-	cd ./microservice-b && yarn build && cd ..
+	cd ./microservice-payment && yarn build && cd ..
+	cd ./microservice-invoice && yarn build && cd ..
 
 start:
 	docker-compose up -d

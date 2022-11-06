@@ -2,29 +2,29 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { Ctx, Payload, RmqContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { CreateNotifyDto as Dto } from './dto/create-notify.dto';
+import { CreateInvoiceDto as Dto } from './dto/create-invoice.dto';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('create-notification-mc-b')
+  @EventPattern('@invoice')
   async createNotification(@Payload() dto: Dto, @Ctx() ctx: RmqContext) {
     const channel = ctx.getChannelRef();
     const msg = ctx.getMessage();
 
-    const isSuccess = this.appService.createNotification(dto);
+    const isSuccess = this.appService.createInvoice(dto);
 
     // informar ao rabbitmq que a msg foi processada e pode ser apagada
     if (isSuccess) return await channel.ack(msg);
 
     // informar que a mensagem precisa ser processada novamente.
-    return await channel.nack(msg);
+    if (!isSuccess) return await channel.nack(msg);
   }
 
-  @MessagePattern('get-notifications')
-  getNotifications(@Ctx() ctx: RmqContext) {
-    const data = this.appService.getNotifications();
+  @MessagePattern('@get-invoices')
+  getInvoices(@Ctx() ctx: RmqContext) {
+    const data = this.appService.getInvoices();
 
     const channel = ctx.getChannelRef();
     const msg = ctx.getMessage();
