@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { Payment } from './model/payment.model';
+import { CreatePatientDto as Dto } from './dto/create-patient.dto';
+import { Patient } from './model/patient.model';
 import * as axios from 'axios';
 
 @Injectable()
 export class AppService {
-  private readonly payments: Array<Payment>;
+  private readonly patients: Array<Patient>;
 
   constructor() {
-    this.payments = [];
+    this.patients = [];
   }
 
-  async createPayment({ product, price, user }: CreatePaymentDto) {
+  async createPatient({ name, paymentId }: Dto) {
     try {
-      console.log('processando pagamento!');
-      const payment = Payment.create(product, price);
+      console.log('processando paciente!');
+      const patient = Patient.create(name, paymentId);
 
       const simulateErr = Math.random() > 0.5;
       if(simulateErr) {
@@ -25,14 +25,11 @@ export class AppService {
         return false; 
       }
 
-      this.payments.push(payment);
-      
+      this.patients.push(patient);
+
       /** @ts-ignore */
-      const result = await axios.post('http://localhost:3000/gateway/invoice', { 
-        paymentId: payment.id,
-        product: payment.name,
-        price: payment.total,
-        user: user
+      await axios.post('http://localhost:3000/gateway/done', { 
+        paymentId: patient.paymentId
       });
 
       return true;
@@ -42,11 +39,12 @@ export class AppService {
     }
   }
 
-  getPayments() {
+  getPatients() {
     try {
       console.log('request recebida!');
-      return this.payments;
+      return this.patients;
     } catch (error: any) {
+      console.log(error);
       throw new RpcException(error.message);
     }
   }

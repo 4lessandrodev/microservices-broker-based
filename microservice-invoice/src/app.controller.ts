@@ -13,7 +13,7 @@ export class AppController {
     const channel = ctx.getChannelRef();
     const msg = ctx.getMessage();
 
-    const isSuccess = this.appService.createInvoice(dto);
+    const isSuccess = await this.appService.createInvoice(dto);
 
     // informar ao rabbitmq que a msg foi processada e pode ser apagada
     if (isSuccess) return await channel.ack(msg);

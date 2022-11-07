@@ -2,18 +2,19 @@ import { Controller } from '@nestjs/common';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { Ctx, Payload, RmqContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
-import { CreatePaymentDto as Dto } from './dto/create-payment.dto';
-import Payment from './model/payment.model';
+import { CreatePatientDto as Dto } from './dto/create-patient.dto';
+import Patient from './model/patient.model';
+
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @EventPattern('@payment')
+  @EventPattern('@patient')
   async createPayment(@Payload() dto: Dto, @Ctx() ctx: RmqContext): Promise<void> {
     const channel = ctx.getChannelRef();
     const msg = ctx.getMessage();
 
-    const isSuccess = await this.appService.createPayment(dto);
+    const isSuccess = await this.appService.createPatient(dto);
     
     // informar ao rabbitmq que a msg foi processada e pode ser apagada
     if (isSuccess) return await channel.ack(msg);
@@ -22,9 +23,9 @@ export class AppController {
     if(!isSuccess) return await channel.nack(msg);
   }
 
-  @MessagePattern('@get-payments')
-  getPayments(@Ctx() ctx: RmqContext): Array<Payment> {
-    const data = this.appService.getPayments();
+  @MessagePattern('@get-patients')
+  getPatients(@Ctx() ctx: RmqContext): Array<Patient> {
+    const data = this.appService.getPatients();
 
     const channel = ctx.getChannelRef();
     const msg = ctx.getMessage();

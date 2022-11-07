@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { Invoice } from './model/invoice.model';
+import * as axios from 'axios';
 
 @Injectable()
 export class AppService {
@@ -11,12 +12,18 @@ export class AppService {
     this.invoices = [];
   }
 
-  createInvoice({ price, product }: CreateInvoiceDto) {
+  async createInvoice({ price, product, paymentId, user }: CreateInvoiceDto) {
     try {
       console.log('emitindo nota!');
-      const invoice = Invoice.create(product, price);
+      const invoice = Invoice.create(product, price, paymentId);
 
       this.invoices.push(invoice);
+
+      /** @ts-ignore */
+      await axios.post('http://localhost:3000/gateway/patient', { 
+        paymentId: invoice.paymentId,
+        name: user
+      });
 
       return true;
     } catch (error: any) {

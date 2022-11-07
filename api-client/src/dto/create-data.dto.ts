@@ -10,6 +10,11 @@ export class CreateDataDto {
   @IsNumber()
   @Max(9999)
   price!: number;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(3, 140)
+  user!: string;
 }
 
 export default CreateDataDto;

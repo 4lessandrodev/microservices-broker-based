@@ -4,7 +4,9 @@ import { ClientProxyFactory } from '@nestjs/microservices';
 export class RabbitMqFactory {
   constructor() {
     this.paymentsConnection = null;
+    this.stepsConnection = null;
     this.invoicesConnection = null;
+    this.patientsConnection = null;
   }
   
   public paymentQueue(): ClientProxy {
@@ -40,6 +42,43 @@ export class RabbitMqFactory {
     }
     return this.invoicesConnection;
   }
+
+  public stepsQueue(): ClientProxy {
+    if (!this.stepsConnection) {
+      this.stepsConnection = ClientProxyFactory.create({
+        transport: Transport.RMQ,
+        options: {
+          // amqp://user:pass@host:10000/virtual-host
+          urls: ['amqp://username:password@localhost:5672'],
+          queue: 'steps',
+          queueOptions: {
+            durable: true
+          }
+        },
+      });
+    }
+    return this.stepsConnection;
+  }
+
+  public patientsQueue(): ClientProxy {
+    if (!this.patientsConnection) {
+      this.patientsConnection = ClientProxyFactory.create({
+        transport: Transport.RMQ,
+        options: {
+          // amqp://user:pass@host:10000/virtual-host
+          urls: ['amqp://username:password@localhost:5672'],
+          queue: 'patients',
+          queueOptions: {
+            durable: true
+          }
+        },
+      });
+    }
+    return this.patientsConnection;
+  }
+
+  private stepsConnection: ClientProxy | null;
+  private patientsConnection: ClientProxy | null;
   private paymentsConnection: ClientProxy | null;
   private invoicesConnection: ClientProxy | null;
 }

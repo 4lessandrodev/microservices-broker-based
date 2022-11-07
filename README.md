@@ -55,6 +55,10 @@ Caso deseje ver os logs execute o comando
 
 $ make logs
 
+# Or
+
+$ make monit
+
 ```
 
 Para parar a aplicação basta executar
@@ -67,6 +71,15 @@ $ make stop
 
 ---
 
+## Objetivo
+
+Demonstrar o uso de microservice em um modelo de pipeline
+
+> Modelo teórico 
+
+ Request --> [Api cliente] --> [Step 1] --> [Gateway] --> [Step 2] --> [Gateway] --> [Step 3] --> Response
+
+---
 ### Recursos do projeto
 
 É possível criar uma mensagem com o endpoint 
@@ -75,9 +88,14 @@ $ make stop
 
 ```sh
 
-$ curl -X POST http://localhost:3000/gateway/buy \
--H "Content-Type: application/json" \
--d '{ "product": "my product", "price": 180 }' | jq '.'
+$ curl --location --request POST 'http://localhost:3000/gateway/buy' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "product": "My item",
+    "price": 999,
+    "user": "Jane"
+}
+'
 
 ```
 
@@ -87,7 +105,9 @@ $ curl -X POST http://localhost:3000/gateway/buy \
 
 ```sh
 
-$ curl http://localhost:3000/gateway/payments | jq '.'
+$ curl --location --request GET 'http://localhost:3000/gateway/payments' \
+--header 'Content-Type: application/json' \
+--data-raw ''
 
 ```
 
@@ -95,6 +115,28 @@ $ curl http://localhost:3000/gateway/payments | jq '.'
 
 ```sh
 
-$ curl http://localhost:3000/gateway/invoices | jq '.'
+$ curl --location --request GET 'http://localhost:3000/gateway/invoices' \
+--header 'Content-Type: application/json' \
+--data-raw ''
+
+```
+
+`GET` listar todos os pacientes
+
+```sh
+
+$ curl --location --request GET 'http://localhost:3000/gateway/patients' \
+--header 'Content-Type: application/json' \
+--data-raw ''
+
+```
+
+`GET` obter status do pagamento
+
+```sh
+
+$ curl --location --request GET 'http://localhost:3000/gateway/step/408354c9-1540-4e8f-889b-0d4b64116740' \
+--header 'Content-Type: application/json' \
+--data-raw ''
 
 ```
