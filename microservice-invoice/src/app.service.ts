@@ -13,10 +13,11 @@ export class AppService {
 
   createInvoice({ price, product }: CreateInvoiceDto) {
     try {
-      console.log('emitindo nota!');
+      console.log('emitindo nota fiscal...');
       const invoice = Invoice.create(product, price);
 
       this.invoices.push(invoice);
+      console.log('nota fiscal emitida com sucesso!');
 
       return true;
     } catch (error: any) {

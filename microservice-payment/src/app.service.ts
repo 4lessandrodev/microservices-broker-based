@@ -13,17 +13,19 @@ export class AppService {
 
   createPayment({ product, price }: CreatePaymentDto) {
     try {
-      console.log('processando pagamento!');
+      console.log('processando pagamento...');
       const payment = Payment.create(product, price);
 
       const simulateErr = Math.random() > 0.5;
       if(simulateErr) {
         let i = 0;
-        while(i < 9e9) { i++ };
-        console.log("Error..."); 
+        while(i < 9e3) { i++ };
+        console.log(`erro ao realizar o pagamento: ${payment.id}.`);
+        console.log('tentando processar o pagamento novamente!');
         return false; 
       }
 
+      console.log('pagamento processado com sucesso!');
       this.payments.push(payment);
       return true;
     } catch (error: any) {
