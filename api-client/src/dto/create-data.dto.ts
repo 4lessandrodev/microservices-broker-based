@@ -8,7 +8,7 @@ export class CreateDataDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @Max(9999)
+  @Max(99999)
   price!: number;
 }
 
