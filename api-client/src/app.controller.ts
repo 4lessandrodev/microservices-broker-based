@@ -1,7 +1,7 @@
 import { Body, Get, Post, UsePipes } from '@nestjs/common';
 import { Controller, ValidationPipe } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { CreateDataDto } from './dto/create-data.dto';
 import RabbitMqFactory from './rabbitmq/connection.factory';
 
@@ -13,23 +13,35 @@ export class AppController {
   constructor(rabbitMQ: RabbitMqFactory) {
     this.brokerPayment = rabbitMQ.paymentQueue()
     this.brokerInvoices = rabbitMQ.invoicesQueue();
+    this.brokerInvoices.connect();
+    this.brokerPayment.connect();
   }
 
   @Post('/buy')
   @UsePipes(ValidationPipe)
-  async buy(@Body() dto: CreateDataDto) {    
-    this.brokerPayment.emit('@payment', dto);
-    this.brokerInvoices.emit('@invoice', dto);
+  async buy(@Body() dto: CreateDataDto) {
+    this.brokerInvoices.connect();
+    this.brokerPayment.connect();
+    await firstValueFrom(this.brokerPayment.emit('@payment', dto));
+    await firstValueFrom(this.brokerInvoices.emit('@invoice', dto));
+    this.brokerInvoices.close();
+    this.brokerPayment.close();
     return { success: true };
   }
 
   @Get('/payments')
-  getPayments(): Observable<Array<CreateDataDto>> {
-    return this.brokerPayment.send('@get-payments', {});
+  async getPayments(): Promise<Array<CreateDataDto>> {
+    this.brokerPayment.connect();
+    const result = await firstValueFrom<Array<CreateDataDto>>(this.brokerPayment.send('@get-payments', {}));
+    this.brokerPayment.close();
+    return result;
   }
 
   @Get('/invoices')
-  getInvoices(): Observable<Array<CreateDataDto>> {
-    return this.brokerInvoices.send('@get-invoices', {});
+  async getInvoices(): Promise<Array<CreateDataDto>> {
+    this.brokerInvoices.connect();
+    const result = await firstValueFrom<Array<CreateDataDto>>(this.brokerInvoices.send('@get-invoices', {}));
+    this.brokerInvoices.close();
+    return result;
   }
 }
