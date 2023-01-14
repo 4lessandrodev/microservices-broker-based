@@ -1,4 +1,5 @@
 install:
+	yarn
 	cd ./api-client && yarn && cd ..
 	cd ./microservice-payment && yarn && cd ..
 	cd ./microservice-invoice && yarn && cd ..
@@ -27,3 +28,9 @@ logs:
 
 restart:
 	yarn pm2 restart all
+
+unbuild:
+	rm -rf node_modules
+	cd ./api-client && rm -rf node_modules dist
+	cd ./microservice-payment && rm -rf node_modules dist
+	cd ./microservice-invoice && rm -rf node_modules dist
