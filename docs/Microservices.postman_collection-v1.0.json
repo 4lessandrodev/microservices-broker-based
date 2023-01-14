@@ -1,0 +1,292 @@
+{
+	"info": {
+		"_postman_id": "e346b6b3-a628-40dd-96aa-234331eb4d5f",
+		"name": "Microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9702967"
+	},
+	"item": [
+		{
+			"name": "Buy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const users = [\"Jane\", \"Peter\", \"Mark\", \"John\", \"Clark\", \"Aline\", \"Joana\", \"Larissa\", \"Janaina\", \"Patricia\"];",
+							"const products = [\"Smartphone\", \"Macbook\", \"Iphone\", \"SmartTV\", \"Mouse\", \"Notebook\", \"Monitor\", \"Tshirt\", \"Phones\", \"Book\"];",
+							"const prices = [ 20.30, 400, 999, 271.21, 785.9, 774.98, 987.88, 71.55, 987.99, 321.99, 45, 22.2, 99.54, 451.88];",
+							"",
+							"const priceIndex = Math.floor(Math.random() * prices.length);",
+							"const userNameIndex = Math.floor(Math.random() * users.length);",
+							"const productIndex = Math.floor(Math.random() * products.length);",
+							"",
+							"const user = users[userNameIndex];",
+							"const product = products[productIndex];",
+							"const price = prices[priceIndex];",
+							"",
+							"pm.collectionVariables.set(\"USER_NAME\", user);",
+							"pm.collectionVariables.set(\"PRODUCT_NAME\", product);",
+							"pm.collectionVariables.set(\"PRODUCT_PRICE\", price);",
+							"",
+							"const timesRunned = pm.collectionVariables.get(\"AUTOMATION_RUNNED\");",
+							"const total = timesRunned ? +timesRunned + 1 : 0;",
+							"pm.collectionVariables.set(\"AUTOMATION_RUNNED\", total);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test('Response must be object with { \"success\": true }', function () {",
+							"    const response = pm.response.json();",
+							"    const request = pm.request.body.toJSON().raw;",
+							"    pm.response.to.have.body({ \"success\": true });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"product\": \"{{PRODUCT_NAME}}\",\n    \"price\": {{PRODUCT_PRICE}},\n    \"user\": \"{{USER_NAME}}\"\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:3000/gateway/buy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gateway",
+						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Payments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const runnedTimes = pm.collectionVariables.get(\"AUTOMATION_RUNNED\");",
+							"const total = runnedTimes ? +runnedTimes : 0;",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(`Should have ${total} payments`, function () {",
+							"    const result = pm.response.json();",
+							"    if(result.length !== total) throw new Error(`Should have ${total} payments`);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/gateway/payments",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gateway",
+						"payments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invoices",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const runnedTimes = pm.collectionVariables.get(\"AUTOMATION_RUNNED\");",
+							"const total = runnedTimes ? +runnedTimes : 0;",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(`Should have ${total} invoices`, function () {",
+							"    const result = pm.response.json();",
+							"    if(result.length !== total) throw new Error(`Should have ${total} invoices`);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/gateway/invoices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gateway",
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patients",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/gateway/patients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gateway",
+						"patients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Step",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/gateway/step/{{LAST_PAYMENT_ID}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gateway",
+						"step",
+						"{{LAST_PAYMENT_ID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "PRODUCT_NAME",
+			"value": "Notebook",
+			"type": "string"
+		},
+		{
+			"key": "PRODUCT_PRICE",
+			"value": 100,
+			"type": "number"
+		},
+		{
+			"key": "USER_NAME",
+			"value": "Jane",
+			"type": "string"
+		},
+		{
+			"key": "AUTOMATION_RUNNED",
+			"value": 0,
+			"type": "number"
+		}
+	]
+}
