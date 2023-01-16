@@ -20,28 +20,20 @@ export class AppController {
   @Post('/buy')
   @UsePipes(ValidationPipe)
   async buy(@Body() dto: CreateDataDto) {
-    await this.brokerInvoices.connect();
-    await this.brokerPayment.connect();
     await firstValueFrom(this.brokerPayment.emit('@payment', dto));
     await firstValueFrom(this.brokerInvoices.emit('@invoice', dto));
-    this.brokerInvoices.close();
-    this.brokerPayment.close();
     return { success: true };
   }
 
   @Get('/payments')
   async getPayments(): Promise<Array<CreateDataDto>> {
-    await this.brokerPayment.connect();
     const result = await firstValueFrom<Array<CreateDataDto>>(this.brokerPayment.send('@get-payments', {}));
-    await this.brokerPayment.close();
     return result;
   }
 
   @Get('/invoices')
   async getInvoices(): Promise<Array<CreateDataDto>> {
-    await this.brokerInvoices.connect();
     const result = await firstValueFrom<Array<CreateDataDto>>(this.brokerInvoices.send('@get-invoices', {}));
-    await this.brokerInvoices.close();
     return result;
   }
 }
